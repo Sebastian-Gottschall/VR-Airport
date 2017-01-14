@@ -19,8 +19,18 @@ public class planeIdentifier : MonoBehaviour {
 	void Update () {
         if (allowed)
         {
-            Debug.Log("departure of plane: " + identifier + " allowed");
+            if (identifier == "SG443")
+            {
+                Debug.Log("departure of automatic plane: " + identifier + " allowed");
+                plane.GetComponent<UnityStandardAssets.Vehicles.Aeroplane.AeroplaneController>().allowed = true;
+            }
+            else
+            {
+                Debug.Log("departure of plane: " + identifier + " allowed");
+                plane.GetComponent<ManualPlaneController>().takeOffGranted = true;
+            }
         }
+        
 	}
 
     public void allowDeparture()

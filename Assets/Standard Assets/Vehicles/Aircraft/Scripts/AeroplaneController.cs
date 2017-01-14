@@ -42,23 +42,55 @@ namespace UnityStandardAssets.Vehicles.Aeroplane
         private Rigidbody m_Rigidbody;
 	    WheelCollider[] m_WheelColliders;
 
+        public bool allowed = false;
+        public bool depart = false;
 
+        //use the frames to check if the plane can take off. Just call it once where the depart cant be break off anymore
+        void Update()
+        {
+            if (allowed && !depart)
+            {
+                depart = true;
+                takeOff();
+            }
+        }
+
+        //the code usually be in Start() but to takeOff after button i needed other method
+        public void takeOff()
+        {
+                //put here the code for start....
+                m_Rigidbody = GetComponent<Rigidbody>();
+                // Store original drag settings, these are modified during flight.
+                m_OriginalDrag = m_Rigidbody.drag;
+                m_OriginalAngularDrag = m_Rigidbody.angularDrag;
+
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    foreach (var componentsInChild in transform.GetChild(i).GetComponentsInChildren<WheelCollider>())
+                    {
+                        componentsInChild.motorTorque = 0.18f;
+                    }
+                }
+        }
+
+        /*
         private void Start()
         {
+            //put here the code for start....
             m_Rigidbody = GetComponent<Rigidbody>();
             // Store original drag settings, these are modified during flight.
             m_OriginalDrag = m_Rigidbody.drag;
             m_OriginalAngularDrag = m_Rigidbody.angularDrag;
 
-			for (int i = 0; i < transform.childCount; i++ )
-			{
-				foreach (var componentsInChild in transform.GetChild(i).GetComponentsInChildren<WheelCollider>())
-				{
-					componentsInChild.motorTorque = 0.18f;
-				}
-			}
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                foreach (var componentsInChild in transform.GetChild(i).GetComponentsInChildren<WheelCollider>())
+                {
+                    componentsInChild.motorTorque = 0.18f;
+                }
+            }
         }
-
+        */
 
         public void Move(float rollInput, float pitchInput, float yawInput, float throttleInput, bool airBrakes)
         {
